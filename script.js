@@ -1,49 +1,38 @@
-const inputs = document.querySelectorAll("input[type='text']");
-inputs[0].setAttribute("maxlength", inputs.length);
+const inputs = document.querySelectorAll(".otp-input");
+
 inputs.forEach((inp, index) => {
+  // 1. Forward movement & numeric filtering
   inp.addEventListener("input", () => {
     inp.value = inp.value.replace(/[^0-9]/g, "");
-    moveForward(inp, index);
-    moveBackward(inp, index);
-  });
-});
 
-inputs[0].addEventListener("input", () => {
-  pasteNumber(inputs[0]);
-});
-
-function moveForward(inp, index) {
-  if (inp.value.length === 1) {
-    if (index < inputs.length - 1) {
+    if (inp.value.length === 1 && index < inputs.length - 1) {
       inputs[index + 1].removeAttribute("disabled");
       inputs[index + 1].focus();
     }
-  }
-}
+  });
 
-function moveBackward(inp, index) {
-  if (inp.value.length === 0) {
-    if (index > 0) {
+  // 2. Backward movement on Backspace
+  inp.addEventListener("keydown", (e) => {
+    if (e.key === "Backspace" && inp.value.length === 0 && index > 0) {
       inputs[index].setAttribute("disabled", true);
-        inputs[index - 1].focus();
+      inputs[index - 1].focus();
     }
-  }
-}
+  });
+});
 
-function pasteNumber(inp) {
-  if (inp.value.length > 1 && inp.value.length > inputs.length) {
-    inp.value = inp.value.slice(0, inputs.length);
-    console.log("pasted number is more than " + inputs.length);
-  } else if (inp.value.length > 1 && inp.value.length <= inputs.length) {
-    console.log("pasted number is less than or equal " + inputs.length);
-  }
+// 3. Multi-digit Paste handling on the first field
+inputs[0].addEventListener("paste", (e) => {
+  e.preventDefault();
+  const pasteData = e.clipboardData
+    .getData("text")
+    .replace(/[^0-9]/g, "")
+    .slice(0, inputs.length);
 
-  let inpValue = inp.value.split("");
-
-  for (let i = 0; i < inpValue.length; i++) {
-    inputs[i].value = inpValue[i];
-    moveForward(inputs[i], i);
+  if (pasteData) {
+    pasteData.split("").forEach((char, index) => {
+      inputs[index].removeAttribute("disabled");
+      inputs[index].value = char;
+      inputs[index].focus();
+    });
   }
-}
-//123456  7890
-//123
+});
