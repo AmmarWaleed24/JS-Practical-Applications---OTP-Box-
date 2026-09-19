@@ -1,4 +1,4 @@
-# SnapCode - OTP Input Component
+# OTP-Box - OTP Input Component
 
 A lightweight, seamless, and responsive One-Time Password (OTP) input component built with vanilla JavaScript, HTML, and CSS. It enhances the user authentication flow by dynamically managing input focus, validating numeric entries, handling backspace navigation gracefully, and supporting multi-digit clipboard pasting.
 
